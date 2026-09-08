@@ -1,0 +1,38 @@
+cff-version: 1.0.1
+message: Please cite this software using these metadata.
+title: Limity
+authors:
+  - family-names: Moreira Barbosa Baptista
+    given-names: Rafael
+  - family-names: Reis
+    given-names: Gabriel
+  - family-names: Fernandes Vilaça
+    given-names: Heleno Junior
+  - family-names: Gonçalves Dolabela
+    given-names: Lucas
+  - family-names: Azevedo Araújo
+    given-names: Mateus
+  - family-names: Zegarra Palhares
+    given-names: Vinícius
+  - name-suffix: Professor
+    affiliation: PUC Minas
+    family-names: Martins Mol
+    given-names: Artur
+  - name-suffix: Professor
+    affiliation: PUC Minas
+    family-names: Carneiro Aramuni
+    given-names: João Paulo
+  - name-suffix: Professor
+    affiliation: PUC Minas
+    family-names: Vilela Cardoso
+    given-names: Leonardo
+keywords:
+  - Planejamento de Viagens
+  - Orçamento
+  - Turismo
+  - React
+  - Flutter
+repository-code: https://github.com/ICEI-PUC-Minas-PMGES-TI/pmg-es-2026-2-ti5-6904100-limity.git
+license: CC-BY-4.0
+version: 1.0.0
+date-released: 2026-07-10

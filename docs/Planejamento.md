@@ -1,65 +1,90 @@
 # Planejamento do Projeto Limity
 
-O desenvolvimento do projeto Limity será realizado de forma incremental utilizando a metodologia Scrum. Este documento registra o planejamento e o acompanhamento das sprints, permitindo acompanhar a evolução do projeto ao longo do semestre.
+O desenvolvimento do projeto Limity será realizado de forma incremental utilizando a metodologia Scrum. Este documento registra o planejamento e o acompanhamento das sprints realizadas ao longo do projeto.
 
 ---
 
-# Sprint 01 - Definição Inicial do Trabalho
+# SPRINT 01 - Definição Inicial do Trabalho
 
 ## Planejamento
 
-- Definição da equipe do projeto.
-- Escolha do tema e proposta inicial do sistema.
-- Elaboração da Lean Inception.
-- Definição das personas.
+- Definição da equipe do projeto;
+- Escolha do tema;
+- Definição da proposta de valor;
+- Identificação do público-alvo;
+- Definição das personas;
+- Elaboração da Lean Inception;
 - Apresentação da visão inicial do produto.
 
-## Fechamento
+### Resumo
 
-Durante a Sprint 1 foram definidos o tema do projeto, a proposta de valor do produto, o público-alvo e as personas do sistema. Também foi elaborada a Lean Inception, consolidando a visão inicial do Limity.
-
----
-
-# Sprint 02 - Iniciação do Projeto e Arquitetura
-
-## Planejamento
-
-- Elaborar o Documento de Arquitetura de Software.
-- Definir os requisitos funcionais e não funcionais.
-- Criar o Product Backlog.
-- Planejar a Sprint 2.
-- Organizar o repositório GitHub.
-- Elaborar o Termo de Abertura do Projeto.
-- Registrar a reunião de Kickoff.
-
-## Fechamento
-
-Durante a Sprint 2 foram produzidos os principais artefatos de planejamento e arquitetura do projeto.
-
-Artefatos entregues:
-
-- Termo de Abertura do Projeto;
-- Ata de Reunião de Kickoff;
-- Documento de Arquitetura de Software (Seções 1 a 4);
-- Product Backlog;
-- Planejamento da Sprint 2;
-- Relatórios de Contribuição Semanal.
-
-Os resultados obtidos nesta sprint estabeleceram a base documental e arquitetural necessária para o início da fase de prototipação e desenvolvimento.
+A Sprint 1 teve como foco a concepção inicial do projeto, estabelecendo a visão do produto e os principais conceitos que nortearão o desenvolvimento do Limity.
 
 ---
 
-# Sprint 03 - Prototipação
+## Fechamento
+
+- Tema do projeto definido;
+- Personas identificadas;
+- Proposta de valor estabelecida;
+- Lean Inception concluída;
+- Visão inicial do produto validada.
+
+### Resumo
+
+A Sprint 1 foi concluída com sucesso, resultando na definição da ideia do projeto e dos elementos necessários para iniciar a fase de planejamento e arquitetura.
+
+---
+
+# SPRINT 02 - Iniciação do Projeto e Arquitetura
 
 ## Planejamento
 
-- Desenvolver wireframes das principais telas.
-- Criar protótipos de interface.
-- Estruturar o frontend Web.
-- Estruturar o aplicativo Mobile.
-- Iniciar o desenvolvimento do backend.
-- Implementar a navegabilidade inicial do sistema.
-- Atualizar a documentação do projeto.
+- Levantamento dos requisitos funcionais e não funcionais;
+- Elaboração do Documento de Arquitetura;
+- Criação do Product Backlog;
+- Organização do repositório GitHub;
+- Elaboração do Termo de Abertura;
+- Registro da reunião de Kickoff;
+- Revisão da documentação arquitetural.
+
+### Resumo
+
+Esta sprint teve como objetivo estruturar a documentação e a arquitetura necessárias para orientar o desenvolvimento do sistema.
+
+---
+
+## Fechamento
+
+- Documento de Arquitetura concluído;
+- Product Backlog estruturado;
+- Termo de Abertura elaborado;
+- Ata de Kickoff registrada;
+- Repositório organizado;
+- Requisitos documentados.
+
+### Resumo
+
+A Sprint 2 consolidou os principais artefatos de iniciação e arquitetura do projeto, preparando a equipe para a etapa de prototipação.
+
+---
+
+# SPRINT 03 - Prototipação
+
+## Planejamento
+
+- Desenvolvimento dos wireframes;
+- Criação dos protótipos de interface;
+- Definição da navegação do sistema;
+- Estruturação inicial das aplicações Web e Mobile;
+- Preparação da estrutura inicial do backend;
+- Atualização da documentação do projeto.
+
+### Resumo
+
+A Sprint 3 será dedicada à construção dos protótipos e à preparação da base técnica para o desenvolvimento do sistema.
+
+---
 
 ## Fechamento
 
@@ -67,29 +92,22 @@ Os resultados obtidos nesta sprint estabeleceram a base documental e arquitetura
 
 ---
 
-# Sprint 04 - Desenvolvimento das Funcionalidades Prioritárias
+# SPRINT 04 - Desenvolvimento das Funcionalidades Prioritárias
 
 ## Planejamento
 
-- Implementar as funcionalidades prioritárias do Product Backlog.
-- Evoluir o frontend e o backend.
-- Gerar a primeira release funcional do sistema.
-- Elaborar a Estrutura Analítica do Projeto (EAP).
-
+- 
 ## Fechamento
 
 *A ser preenchido ao término da Sprint 4.*
 
 ---
 
-# Sprint 05 - Funcionalidades Desejáveis e Testes
+# SPRINT 05 - Funcionalidades Desejáveis e Testes
 
 ## Planejamento
 
-- Implementar funcionalidades desejáveis.
-- Evoluir as funcionalidades já existentes.
-- Implementar e refinar testes.
-- Atualizar a release do sistema.
+- 
 
 ## Fechamento
 
@@ -97,16 +115,11 @@ Os resultados obtidos nesta sprint estabeleceram a base documental e arquitetura
 
 ---
 
-# Sprint 06 - Finalização e Encerramento do Projeto
+# SPRINT 06 - Finalização e Encerramento do Projeto
 
 ## Planejamento
 
-- Refinar funcionalidades existentes.
-- Concluir a implementação dos testes.
-- Realizar a avaliação da arquitetura utilizando o método ATAM.
-- Preparar a apresentação final.
-- Produzir o vídeo pitch.
-- Elaborar o relatório de encerramento do projeto.
+- 
 
 ## Fechamento
 

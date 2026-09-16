@@ -14,6 +14,7 @@ const links = [
   { href: "/destinos", label: "Destinos" },
   { href: "/premium", label: "Premium" },
   { href: "/faq", label: "Ajuda" },
+  { href: "/perfil", label: "Perfil" },
 ];
 
 export default function Navbar({ isLogged }: props) {

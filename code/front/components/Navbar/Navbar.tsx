@@ -14,7 +14,6 @@ const links = [
   { href: "/destinos", label: "Destinos" },
   { href: "/premium", label: "Premium" },
   { href: "/faq", label: "Ajuda" },
-  { href: "/perfil", label: "Perfil" },
 ];
 
 export default function Navbar({ isLogged }: props) {
@@ -106,13 +105,6 @@ export default function Navbar({ isLogged }: props) {
               );
             })}
             <div className="flex flex-col gap-3 px-6 pt-4 pb-3">
-              <Link
-                href="/perfil"
-                className="border-2 border-azul-claro text-azul py-2 px-4 rounded-xl text-center font-semibold"
-                onClick={() => setIsOpen(false)}
-              >
-                Meu perfil
-              </Link>
               <Link
                 href="/entrar"
                 className="border-2 border-gray-200 py-2 px-4 rounded-xl text-center font-semibold"

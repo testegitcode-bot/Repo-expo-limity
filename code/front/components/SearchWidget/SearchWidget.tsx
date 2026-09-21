@@ -1,7 +1,8 @@
 "use client";
 
 import municipios from "./municipios.json";
-import { useState } from "react";
+import { useState, type SubmitEvent } from "react";
+import { useRouter } from "next/navigation";
 import {
   FaArrowRight,
   FaBus,
@@ -23,9 +24,44 @@ const preferenceOptions = [
   { label: "Pet", icon: <FaDog /> },
 ];
 
+const MIN_BUDGET = 150;
+
+function todayLocal() {
+  const now = new Date();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  return `${now.getFullYear()}-${month}-${day}`;
+}
+
 export default function SearchWidget() {
+  const router = useRouter();
   const [budget, setBudget] = useState(0);
+  const [origin, setOrigin] = useState("");
+  const [departureDate, setDepartureDate] = useState("");
   const [preferences, setPreferences] = useState<string[]>([]);
+  const [error, setError] = useState("");
+
+  const handleSubmit = (event: SubmitEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (budget < MIN_BUDGET) {
+      setError(`Informe um orçamento a partir de R$ ${MIN_BUDGET}.`);
+      return;
+    }
+    if (!origin) {
+      setError("Selecione a cidade de origem.");
+      return;
+    }
+    if (!departureDate || departureDate < todayLocal()) {
+      setError("Escolha uma data de saída a partir de hoje.");
+      return;
+    }
+    setError("");
+    const params = new URLSearchParams({ budget: String(budget), origin, date: departureDate });
+    if (preferences.length > 0) {
+      params.set("prefs", preferences.join(","));
+    }
+    router.push(`/resultados?${params.toString()}`);
+  };
 
   const togglePreference = (preference: string) => {
     setPreferences((currentPreferences) =>
@@ -37,7 +73,7 @@ export default function SearchWidget() {
 
   return (
     <div className="bg-white rounded-3xl w-full max-w-190 p-4 sm:p-6">
-      <div className="flex flex-col">
+      <form className="flex flex-col" onSubmit={handleSubmit} noValidate>
         <label htmlFor="input-budget" className="font-semibold">QUANTO VOCÊ PODE GASTAR?</label>
         <div className="relative my-2">
           <span className="absolute left-4 top-1/2 -translate-y-1/2 text-2xl sm:text-4xl font-bold">
@@ -80,7 +116,13 @@ export default function SearchWidget() {
               Cidade de origem
             </label>
             <div id="input-origem" className="flex items-center">
-              <select className="rounded-xl border-azul-claro border-2 h-12 w-full p-3.5 focus:bg-blue-50">
+              <select
+                id="input-cidade"
+                value={origin}
+                onChange={(event) => setOrigin(event.currentTarget.value)}
+                className="rounded-xl border-azul-claro border-2 h-12 w-full p-3.5 focus:bg-blue-50"
+              >
+                <option value="">Selecione sua cidade</option>
                 {municipios.map((nome) => (
                   <option key={nome} value={nome}>
                     {nome}
@@ -100,6 +142,8 @@ export default function SearchWidget() {
             <input
               type="date"
               id="input-datas"
+              value={departureDate}
+              onChange={(event) => setDepartureDate(event.currentTarget.value)}
               className="rounded-xl border-azul-claro border-2 h-12 w-full p-3.5 focus:bg-blue-50"
             />
           </div>
@@ -122,10 +166,18 @@ export default function SearchWidget() {
               ))}
           </div>
         </div>
-        <button className="bg-amarelo cursor-pointer p-3 w-full rounded-xl flex justify-center items-center gap-2">
+        {error && (
+          <p role="alert" className="text-sm text-red-600 mb-3 pl-1">
+            {error}
+          </p>
+        )}
+        <button
+          type="submit"
+          className="bg-amarelo cursor-pointer p-3 w-full rounded-xl flex justify-center items-center gap-2"
+        >
           ENCONTRAR MINHA VIAGEM <FaArrowRight />
         </button>
-      </div>
+      </form>
     </div>
   );
 }

@@ -1,9 +1,47 @@
+"use client";
+
 import Link from "next/link";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import AuthLayout from "@/components/AuthLayout/AuthLayout";
 import PasswordField from "@/components/PasswordField/PasswordField";
+import { ApiError, register } from "@/lib/api";
+import { saveSessionToken } from "@/lib/session";
 import { FaArrowRight, FaEnvelope, FaGoogle, FaUser } from "react-icons/fa6";
 
 export default function CriarConta() {
+  const router = useRouter();
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmation, setConfirmation] = useState("");
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setError("");
+    if (password !== confirmation) {
+      setError("As senhas precisam ser iguais.");
+      return;
+    }
+    if (!acceptedTerms) {
+      setError("Aceite os termos de uso e a política de privacidade para continuar.");
+      return;
+    }
+    setIsSubmitting(true);
+    try {
+      const response = await register({ name, email, password });
+      saveSessionToken(response.accessToken);
+      router.push("/perfil");
+    } catch (requestError) {
+      setError(requestError instanceof ApiError ? requestError.message : "Não foi possível criar sua conta.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
   return (
     <AuthLayout
       title="Comece a economizar na próxima viagem"
@@ -22,7 +60,7 @@ export default function CriarConta() {
         </Link>
       </p>
 
-      <div className="flex flex-col gap-5">
+      <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
         <div>
           <label htmlFor="nome" className="font-semibold text-sm mb-1 block">
             Nome completo
@@ -30,6 +68,9 @@ export default function CriarConta() {
           <div className="relative">
             <FaUser className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
             <input
+                            name="name"
+                            value={name}
+                            onChange={(event) => setName(event.currentTarget.value)}
               id="nome"
               type="text"
               placeholder="Seu nome"
@@ -46,6 +87,9 @@ export default function CriarConta() {
           <div className="relative">
             <FaEnvelope className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
             <input
+                            name="email"
+                            value={email}
+                            onChange={(event) => setEmail(event.currentTarget.value)}
               id="email"
               type="email"
               placeholder="voce@email.com"
@@ -55,11 +99,11 @@ export default function CriarConta() {
           </div>
         </div>
 
-        <PasswordField label="Senha" placeholder="Mínimo de 8 caracteres" autoComplete="new-password" />
-        <PasswordField label="Confirmar senha" placeholder="Repita a senha" autoComplete="new-password" />
+        <PasswordField label="Senha" id="password" name="password" value={password} onChange={(event) => setPassword(event.currentTarget.value)} placeholder="Mínimo de 8 caracteres" autoComplete="new-password" />
+        <PasswordField label="Confirmar senha" id="confirmation" name="confirmation" value={confirmation} onChange={(event) => setConfirmation(event.currentTarget.value)} placeholder="Repita a senha" autoComplete="new-password" />
 
         <label className="flex items-start gap-2 text-sm text-gray-500 cursor-pointer">
-          <input type="checkbox" className="accent-azul size-4 mt-0.5" />
+          <input type="checkbox" checked={acceptedTerms} onChange={(event) => setAcceptedTerms(event.currentTarget.checked)} className="accent-azul size-4 mt-0.5" />
           Aceito os{" "}
           <Link href="#" className="text-azul font-medium">
             termos de uso
@@ -70,13 +114,16 @@ export default function CriarConta() {
           </Link>
         </label>
 
+        {error && <p role="alert" className="text-sm text-red-600">{error}</p>}
+
         <button
-          type="button"
+          type="submit"
+          disabled={isSubmitting}
           className="bg-amarelo hover:brightness-95 shadow-sm hover:shadow-md transition cursor-pointer py-3 rounded-xl font-semibold flex items-center justify-center gap-2 mt-2"
         >
-          Criar conta <FaArrowRight />
+          {isSubmitting ? "Criando conta..." : <>Criar conta <FaArrowRight /></>}
         </button>
-      </div>
+      </form>
 
       <div className="flex items-center gap-3 my-6">
         <span className="h-px bg-gray-200 flex-1" />
@@ -86,6 +133,8 @@ export default function CriarConta() {
 
       <button
         type="button"
+        disabled
+        aria-disabled="true"
         className="w-full border-2 border-gray-200 hover:border-azul-claro transition cursor-pointer py-3 rounded-xl font-semibold flex items-center justify-center gap-2"
       >
         <FaGoogle className="text-azul-claro" />

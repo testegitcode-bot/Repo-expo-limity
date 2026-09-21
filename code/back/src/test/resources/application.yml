@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:limity;MODE=PostgreSQL;DB_CLOSE_DELAY=-1
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+
+limity:
+  auth:
+    jwt-secret: test-secret-with-at-least-32-characters-long
+    jwt-expiration: PT2H

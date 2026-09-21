@@ -1,0 +1,77 @@
+spring:
+  application:
+    name: limity-back
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/limity}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
+  jpa:
+    hibernate:
+      ddl-auto: ${DB_DDL_AUTO:update}
+    open-in-view: false
+  config:
+    # Carrega as chaves do arquivo .env (rode o backend a partir de code/back).
+    # "optional:" evita erro caso o arquivo não exista.
+    import:
+      - optional:file:.env[.properties]
+      - optional:file:./code/back/.env[.properties]
+
+server:
+  port: ${PORT:8080}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+limity:
+  cors:
+    # Origens do front separadas por vírgula; aceita curinga na porta (http://localhost:*),
+    # útil porque o Next muda de porta quando a 3000 está ocupada.
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:*}
+
+  search:
+    default-nights: 4          # diárias quando o cliente não informa noites nem volta
+    max-hotel-lookups: 12      # quantos destinos (os mais baratos de chegar) recebem consulta de hotel
+    date-window-days: 3        # tolerância (+/- dias) entre a data pedida e o voo encontrado no cache
+    stay-tolerance-nights: 2   # tolerância de noites quando o cliente pediu uma duração
+    max-candidates: 40
+    bus:
+      max-distance-km: 1800    # acima disso não sugerimos ônibus
+      road-factor: 1.25        # distância rodoviária ~ 1,25 x linha reta
+      brl-per-km: 0.25         # tarifa média estimada por km (por pessoa, só ida)
+      average-speed-kmh: 65
+
+  travelpayouts:
+    token: ${TRAVELPAYOUTS_TOKEN:}
+    marker: ${TRAVELPAYOUTS_MARKER:}
+    base-url: https://api.travelpayouts.com
+    places-url: https://autocomplete.travelpayouts.com
+    link-base-url: https://www.aviasales.com
+    market: ${TRAVELPAYOUTS_MARKET:br}
+    timeout: 10s
+    max-concurrency: 6
+
+  liteapi:
+    key: ${LITEAPI_KEY:}
+    base-url: https://api.liteapi.travel/v3.0
+    timeout: 20s
+    max-concurrency: 2         # a sandbox devolve 429 com muitas chamadas simultâneas
+    hotels-per-lookup: 30      # quantos hotéis da região entram na cotação
+    hotel-radius-meters: 15000
+    rates-timeout-seconds: 8
+
+  pexels:
+    key: ${PEXELS_API_KEY:}
+    base-url: https://api.pexels.com/v1
+    timeout: 8s
+
+  geocoding:
+    # Open-Meteo Geocoding: sem chave. Grátis apenas para uso não comercial.
+    base-url: https://geocoding-api.open-meteo.com/v1
+    timeout: 8s
+
+  auth:
+    jwt-secret: ${JWT_SECRET:limity-development-secret-change-me-32chars}
+    jwt-expiration: ${JWT_EXPIRATION:PT2H}

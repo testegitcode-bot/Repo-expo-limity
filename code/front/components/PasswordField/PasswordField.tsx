@@ -1,16 +1,21 @@
 "use client";
 
-import { useId, useState } from "react";
+import { useId, useState, type ChangeEvent } from "react";
 import { FaEye, FaEyeSlash, FaLock } from "react-icons/fa6";
 
 interface props {
   label: string;
   placeholder?: string;
   autoComplete?: string;
+  id?: string;
+  name?: string;
+  value?: string;
+  onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
 }
 
-export default function PasswordField({ label, placeholder, autoComplete }: props) {
-  const id = useId();
+export default function PasswordField({ label, placeholder, autoComplete, id: providedId, name, value, onChange }: props) {
+  const generatedId = useId();
+  const id = providedId ?? generatedId;
   const [visible, setVisible] = useState(false);
 
   return (
@@ -22,9 +27,12 @@ export default function PasswordField({ label, placeholder, autoComplete }: prop
         <FaLock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
         <input
           id={id}
+          name={name}
           type={visible ? "text" : "password"}
           placeholder={placeholder}
           autoComplete={autoComplete}
+          value={value}
+          onChange={onChange}
           className="w-full rounded-xl border-2 border-azul-claro py-3 pl-11 pr-11 focus:bg-blue-50"
         />
         <button

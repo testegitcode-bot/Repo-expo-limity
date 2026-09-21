@@ -1,9 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { FaBars, FaPaperPlane, FaXmark } from "react-icons/fa6";
+import { getCurrentUser } from "@/lib/api";
+import { clearSessionToken, getSessionToken } from "@/lib/session";
 
 interface props {
   isLogged: boolean;
@@ -19,7 +21,29 @@ const links = [
 
 export default function Navbar({ isLogged }: props) {
   const [isOpen, setIsOpen] = useState(false);
+  const [hasSession, setHasSession] = useState<boolean | null>(isLogged ? true : null);
   const pathname = usePathname();
+  const router = useRouter();
+
+  useEffect(() => {
+    const token = getSessionToken();
+    if (!token) {
+      return;
+    }
+    getCurrentUser(token)
+      .then(() => setHasSession(true))
+      .catch(() => {
+        clearSessionToken();
+        setHasSession(false);
+      });
+  }, []);
+
+  function logout() {
+    clearSessionToken();
+    setHasSession(false);
+    setIsOpen(false);
+    router.push("/");
+  }
 
   return (
     <header className="sticky top-0 z-50 bg-branco/90 backdrop-blur-sm border-b border-gray-200/80">
@@ -58,18 +82,20 @@ export default function Navbar({ isLogged }: props) {
         </div>
 
         <div className="hidden lg:flex w-auto justify-end items-center gap-3">
-          <Link
-            href="/entrar"
-            className="border-2 border-gray-200 hover:border-azul py-2 px-5 rounded-xl font-semibold text-cinza hover:text-azul transition-colors"
-          >
-            Entrar
-          </Link>
-          <Link
-            href="/criar-conta"
-            className="bg-amarelo hover:brightness-95 shadow-sm hover:shadow-md py-2 px-5 rounded-xl font-semibold transition"
-          >
-            Criar Conta
-          </Link>
+          {hasSession ? (
+            <button type="button" onClick={logout} className="border-2 border-gray-200 hover:border-azul py-2 px-5 rounded-xl font-semibold text-cinza hover:text-azul transition-colors">
+              Sair
+            </button>
+          ) : (
+            <>
+              <Link href="/entrar" className="border-2 border-gray-200 hover:border-azul py-2 px-5 rounded-xl font-semibold text-cinza hover:text-azul transition-colors">
+                Entrar
+              </Link>
+              <Link href="/criar-conta" className="bg-amarelo hover:brightness-95 shadow-sm hover:shadow-md py-2 px-5 rounded-xl font-semibold transition">
+                Criar Conta
+              </Link>
+            </>
+          )}
         </div>
 
         <button
@@ -106,20 +132,20 @@ export default function Navbar({ isLogged }: props) {
               );
             })}
             <div className="flex flex-col gap-3 px-6 pt-4 pb-3">
-              <Link
-                href="/entrar"
-                className="border-2 border-gray-200 py-2 px-4 rounded-xl text-center font-semibold"
-                onClick={() => setIsOpen(false)}
-              >
-                Entrar
-              </Link>
-              <Link
-                href="/criar-conta"
-                className="bg-amarelo py-2 px-4 rounded-xl text-center font-semibold"
-                onClick={() => setIsOpen(false)}
-              >
-                Criar Conta
-              </Link>
+              {hasSession ? (
+                <button type="button" onClick={logout} className="border-2 border-gray-200 py-2 px-4 rounded-xl text-center font-semibold">
+                  Sair
+                </button>
+              ) : (
+                <>
+                  <Link href="/entrar" className="border-2 border-gray-200 py-2 px-4 rounded-xl text-center font-semibold" onClick={() => setIsOpen(false)}>
+                    Entrar
+                  </Link>
+                  <Link href="/criar-conta" className="bg-amarelo py-2 px-4 rounded-xl text-center font-semibold" onClick={() => setIsOpen(false)}>
+                    Criar Conta
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         </div>

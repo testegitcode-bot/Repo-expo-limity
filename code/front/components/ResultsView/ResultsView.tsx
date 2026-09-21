@@ -5,10 +5,14 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   FaArrowLeft,
+  FaCalendarDays,
+  FaCheck,
+  FaCircle,
   FaCircleExclamation,
   FaLocationDot,
   FaSpinner,
   FaTriangleExclamation,
+  FaWallet,
 } from "react-icons/fa6";
 import TripCard from "@/components/TripCard/TripCard";
 import { ApiError, searchTrips, type SearchPayload, type SearchResponse } from "@/lib/api";
@@ -20,6 +24,19 @@ type State =
   | { status: "error"; message: string };
 
 type Sort = "best" | "price";
+
+type LoadingStep = {
+  label: string;
+  detail: string;
+};
+
+const loadingSteps: LoadingStep[] = [
+  { label: "Analisando orçamento", detail: "Entendendo o que cabe no seu limite" },
+  { label: "Consultando voos e ônibus", detail: "Comparando opções de transporte" },
+  { label: "Consultando hospedagens", detail: "Buscando estadias para suas datas" },
+  { label: "Gerando recomendações", detail: "Cruzando destinos e custos" },
+  { label: "Selecionando melhores opções", detail: "Ordenando as viagens mais vantajosas" },
+];
 
 function parsePayload(query: string): SearchPayload | null {
   const params = new URLSearchParams(query);
@@ -53,6 +70,17 @@ function ResultsContent({ query }: { query: string }) {
       ? { status: "loading" }
       : { status: "error", message: "Faltam dados da busca. Volte e preencha o formulário." },
   );
+  const [loadingProgress, setLoadingProgress] = useState(8);
+
+  useEffect(() => {
+    if (state.status !== "loading") {
+      return;
+    }
+    const interval = window.setInterval(() => {
+      setLoadingProgress((current) => Math.min(current + Math.ceil((92 - current) / 14), 92));
+    }, 500);
+    return () => window.clearInterval(interval);
+  }, [state.status]);
 
   useEffect(() => {
     if (!payload) {
@@ -117,16 +145,8 @@ function ResultsContent({ query }: { query: string }) {
       </div>
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
-        {state.status === "loading" && (
-          <div className="flex flex-col items-center text-center py-20 text-gray-500">
-            <FaSpinner className="size-8 text-azul animate-spin mb-5" />
-            <p className="font-semibold text-azul mb-1">
-              Procurando as melhores opções para o seu orçamento...
-            </p>
-            <p className="text-sm">
-              Estamos consultando voos e hotéis. Na primeira busca isso pode levar até um minuto.
-            </p>
-          </div>
+        {state.status === "loading" && payload && (
+          <LoadingView payload={payload} progress={loadingProgress} />
         )}
 
         {state.status === "error" && (
@@ -147,6 +167,110 @@ function ResultsContent({ query }: { query: string }) {
         )}
       </div>
     </>
+  );
+}
+
+function LoadingView({
+  payload,
+  progress,
+}: {
+  payload: SearchPayload;
+  progress: number;
+}) {
+  const completedSteps = Math.min(loadingSteps.length - 1, Math.floor(progress / 20));
+  const currentStep = Math.min(loadingSteps.length - 1, completedSteps);
+  const message = loadingSteps[currentStep].detail;
+
+  return (
+    <div className="mx-auto flex w-full max-w-3xl flex-col items-center py-8 text-center sm:py-14">
+      <div className="mb-7 flex items-center gap-3 text-azul-claro" aria-hidden="true">
+        <span className="flex size-11 items-center justify-center rounded-2xl bg-ciano/50">
+          <FaSpinner className="size-5 animate-spin" />
+        </span>
+        <span className="h-px w-10 bg-azul-claro/30 sm:w-16" />
+        <span className="flex size-11 items-center justify-center rounded-2xl border-2 border-azul-claro/30 text-azul-claro">
+          <FaLocationDot className="size-5" />
+        </span>
+      </div>
+
+      <p className="mb-3 text-2xl font-semibold leading-snug text-azul sm:text-3xl">
+        Encontrando as melhores viagens para você
+      </p>
+      <p className="max-w-2xl text-sm leading-relaxed text-gray-500 sm:text-base">
+        Estamos analisando seu orçamento e comparando opções de transporte, hospedagem e destinos
+        para encontrar as melhores recomendações.
+      </p>
+
+      <div className="mt-9 w-full text-left">
+        <div className="mb-2 flex items-center justify-between gap-4 text-xs font-semibold text-gray-500">
+          <span>{message}</span>
+          <span className="text-azul">{progress}%</span>
+        </div>
+        <div
+          className="h-3 overflow-hidden rounded-full bg-gray-200"
+          role="progressbar"
+          aria-label="Progresso da busca"
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={progress}
+        >
+          <div
+            className="h-full rounded-full bg-azul-claro transition-[width] duration-500 ease-out"
+            style={{ width: `${progress}%` }}
+          />
+        </div>
+      </div>
+
+      <div className="mt-8 grid w-full grid-cols-1 overflow-hidden rounded-2xl border-2 border-gray-100 bg-white text-left shadow-sm">
+        {loadingSteps.map((step, index) => {
+          const isComplete = index < completedSteps;
+          const isCurrent = index === currentStep;
+          return (
+            <div
+              key={step.label}
+              className={`flex items-start gap-3 border-b border-gray-100 p-4 last:border-b-0 sm:px-5 ${
+                isCurrent ? "bg-ciano/20" : ""
+              }`}
+            >
+              <span
+                className={`mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-full text-xs ${
+                  isComplete
+                    ? "bg-green-100 text-green-700"
+                    : isCurrent
+                      ? "bg-azul text-branco"
+                      : "bg-gray-100 text-gray-400"
+                }`}
+              >
+                {isComplete ? <FaCheck /> : isCurrent ? <FaSpinner className="animate-spin" /> : <FaCircle className="size-2" />}
+              </span>
+              <div className="min-w-0">
+                <p className={`text-sm font-semibold ${isComplete ? "text-green-700" : isCurrent ? "text-azul" : "text-gray-400"}`}>
+                  {step.label}
+                </p>
+                <p className="mt-0.5 text-xs text-gray-400">{step.detail}</p>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      <div className="mt-6 grid w-full grid-cols-1 gap-3 text-left sm:grid-cols-3">
+        <div className="flex items-center gap-3 rounded-xl border border-gray-100 bg-white p-3">
+          <FaWallet className="text-azul-claro" />
+          <div><p className="text-[11px] text-gray-400">Orçamento</p><p className="text-sm font-semibold text-azul">{formatBRL(payload.budget)}</p></div>
+        </div>
+        <div className="flex items-center gap-3 rounded-xl border border-gray-100 bg-white p-3">
+          <FaLocationDot className="text-azul-claro" />
+          <div><p className="text-[11px] text-gray-400">Origem</p><p className="truncate text-sm font-semibold text-azul">{payload.origin}</p></div>
+        </div>
+        <div className="flex items-center gap-3 rounded-xl border border-gray-100 bg-white p-3">
+          <FaCalendarDays className="text-azul-claro" />
+          <div><p className="text-[11px] text-gray-400">Saída</p><p className="text-sm font-semibold text-azul">{formatDay(payload.departureDate)}</p></div>
+        </div>
+      </div>
+
+      <p className="mt-7 text-xs text-gray-400">A primeira busca pode levar alguns instantes enquanto consultamos as fontes de viagem.</p>
+    </div>
   );
 }
 

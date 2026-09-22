@@ -6,14 +6,8 @@ export interface AuthUser {
   id: string;
   name: string;
   email: string;
-<<<<<<< HEAD
   preferences: string[];
   spentAmount: number;
-=======
-  points: number;
-  cashback: number;
-  preferences: string[];
->>>>>>> a05be0119e7e45ee0e3321c2455c47ef0298f388
 }
 
 export interface AuthResponse {
@@ -183,7 +177,6 @@ export function getCurrentUser(token: string): Promise<AuthUser> {
 }
 
 export function updatePreferences(token: string, preferences: string[]): Promise<AuthUser> {
-<<<<<<< HEAD
   return request<AuthUser>(
     "/api/v1/auth/me/preferences",
     { method: "PUT", body: JSON.stringify({ preferences }) },
@@ -219,23 +212,6 @@ export function resetPassword(token: string, password: string): Promise<{ messag
   return request<{ message: string }>("/api/v1/auth/reset-password", {
     method: "POST",
     body: JSON.stringify({ token, password }),
-=======
-  return request<AuthUser>("/api/v1/auth/preferences", {
-    method: "PUT",
-    body: JSON.stringify({ preferences }),
-  }, token);
-}
-
-export interface PasswordRecoveryPayload {
-  email: string;
-  newPassword: string;
-}
-
-export function recoverPassword(payload: PasswordRecoveryPayload): Promise<void> {
-  return request<void>("/api/v1/auth/recover-password", {
-    method: "POST",
-    body: JSON.stringify(payload),
->>>>>>> a05be0119e7e45ee0e3321c2455c47ef0298f388
   });
 }
 

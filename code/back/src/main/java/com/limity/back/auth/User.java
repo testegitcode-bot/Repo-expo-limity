@@ -1,25 +1,16 @@
 package com.limity.back.auth;
 
-<<<<<<< HEAD
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
-=======
-import java.util.LinkedHashSet;
-import java.util.Set;
->>>>>>> a05be0119e7e45ee0e3321c2455c47ef0298f388
 import java.util.UUID;
 
-import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
 
 @Entity
@@ -39,7 +30,6 @@ public class User {
     @Column(nullable = false)
     private String passwordHash;
 
-<<<<<<< HEAD
     @Column(length = 500)
     private String travelPreferences;
 
@@ -50,18 +40,6 @@ public class User {
     private String passwordResetTokenHash;
 
     private Instant passwordResetExpiresAt;
-=======
-    @Column(nullable = false)
-    private int points = 0;
-
-    @Column(nullable = false)
-    private double cashback = 0.0;
-
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "user_preferences", joinColumns = @JoinColumn(name = "user_id"))
-    @Column(name = "preference", length = 40)
-    private Set<String> preferences = new LinkedHashSet<>();
->>>>>>> a05be0119e7e45ee0e3321c2455c47ef0298f388
 
     protected User() {
     }
@@ -94,7 +72,6 @@ public class User {
         return passwordHash;
     }
 
-<<<<<<< HEAD
     public BigDecimal getSpentAmount() {
         return spentAmount == null ? BigDecimal.ZERO : spentAmount;
     }
@@ -128,25 +105,5 @@ public class User {
         this.passwordHash = newPasswordHash;
         this.passwordResetTokenHash = null;
         this.passwordResetExpiresAt = null;
-=======
-    public int getPoints() {
-        return points;
-    }
-
-    public double getCashback() {
-        return cashback;
-    }
-
-    public Set<String> getPreferences() {
-        return preferences;
-    }
-
-    public void setPreferences(Set<String> preferences) {
-        this.preferences = new LinkedHashSet<>(preferences);
-    }
-
-    public void setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
->>>>>>> a05be0119e7e45ee0e3321c2455c47ef0298f388
     }
 }

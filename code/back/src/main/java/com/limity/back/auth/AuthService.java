@@ -1,6 +1,5 @@
 package com.limity.back.auth;
 
-<<<<<<< HEAD
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -10,11 +9,6 @@ import java.util.HexFormat;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
-=======
-import java.util.LinkedHashSet;
-import java.util.Locale;
-import java.util.Set;
->>>>>>> a05be0119e7e45ee0e3321c2455c47ef0298f388
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -117,37 +111,6 @@ public class AuthService {
         }
     }
 
-    @Transactional
-    public UserView updatePreferences(String subject, Set<String> preferences) {
-        User user = findUser(subject);
-        Set<String> normalized = new LinkedHashSet<>();
-        for (String pref : preferences) {
-            String trimmed = pref.trim();
-            if (!trimmed.isEmpty()) {
-                normalized.add(trimmed);
-            }
-        }
-        user.setPreferences(normalized);
-        return UserView.from(users.save(user));
-    }
-
-    @Transactional
-    public void recoverPassword(String email, String newPassword) {
-        User user = users.findByEmail(normalizeEmail(email))
-                .orElseThrow(() -> new InvalidCredentialsException("Não encontramos uma conta com este e-mail."));
-        user.setPasswordHash(passwordEncoder.encode(newPassword));
-        users.save(user);
-    }
-
-    private User findUser(String subject) {
-        try {
-            return users.findById(java.util.UUID.fromString(subject))
-                    .orElseThrow(InvalidCredentialsException::new);
-        } catch (IllegalArgumentException exception) {
-            throw new InvalidCredentialsException();
-        }
-    }
-
     private AuthResponse response(User user) {
         JwtService.IssuedToken token = jwtService.issue(user);
         return new AuthResponse(token.value(), "Bearer", token.expiresAt(), UserView.from(user));
@@ -156,7 +119,6 @@ public class AuthService {
     private static String normalizeEmail(String email) {
         return email.trim().toLowerCase(Locale.ROOT);
     }
-<<<<<<< HEAD
 
     static String hashToken(String token) {
         try {
@@ -166,6 +128,4 @@ public class AuthService {
             throw new IllegalStateException("SHA-256 indisponível.", exception);
         }
     }
-=======
->>>>>>> a05be0119e7e45ee0e3321c2455c47ef0298f388
 }

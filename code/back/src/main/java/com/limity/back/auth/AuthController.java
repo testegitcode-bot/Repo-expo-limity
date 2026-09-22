@@ -47,20 +47,4 @@ public class AuthController {
     public UserView me(Authentication authentication) {
         return service.currentUser(authentication.getName());
     }
-
-    @PutMapping("/me")
-    public UserView updateProfile(Authentication authentication, @Valid @RequestBody UpdateProfileRequest request) {
-        return service.updateProfile(authentication.getName(), request);
-    }
-
-    @PutMapping("/me/preferences")
-    public UserView updatePreferences(Authentication authentication, @Valid @RequestBody UpdatePreferencesRequest request) {
-        return service.updatePreferences(authentication.getName(), request);
-    }
-
-    @DeleteMapping("/me")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteAccount(Authentication authentication) {
-        service.deleteAccount(authentication.getName());
-    }
 }

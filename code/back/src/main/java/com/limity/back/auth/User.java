@@ -1,7 +1,14 @@
 package com.limity.back.auth;
 
+<<<<<<< HEAD
+import java.math.BigDecimal;
+import java.time.Instant;
+import java.util.Arrays;
+import java.util.List;
+=======
 import java.util.LinkedHashSet;
 import java.util.Set;
+>>>>>>> a05be0119e7e45ee0e3321c2455c47ef0298f388
 import java.util.UUID;
 
 import jakarta.persistence.CollectionTable;
@@ -32,6 +39,18 @@ public class User {
     @Column(nullable = false)
     private String passwordHash;
 
+<<<<<<< HEAD
+    @Column(length = 500)
+    private String travelPreferences;
+
+    @Column(precision = 12, scale = 2)
+    private BigDecimal spentAmount = BigDecimal.ZERO;
+
+    @Column(length = 64)
+    private String passwordResetTokenHash;
+
+    private Instant passwordResetExpiresAt;
+=======
     @Column(nullable = false)
     private int points = 0;
 
@@ -42,6 +61,7 @@ public class User {
     @CollectionTable(name = "user_preferences", joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "preference", length = 40)
     private Set<String> preferences = new LinkedHashSet<>();
+>>>>>>> a05be0119e7e45ee0e3321c2455c47ef0298f388
 
     protected User() {
     }
@@ -50,6 +70,7 @@ public class User {
         this.name = name;
         this.email = email;
         this.passwordHash = passwordHash;
+        this.spentAmount = BigDecimal.ZERO;
     }
 
     public UUID getId() {
@@ -64,10 +85,50 @@ public class User {
         return email;
     }
 
+    public void updateProfile(String name, String email) {
+        this.name = name;
+        this.email = email;
+    }
+
     public String getPasswordHash() {
         return passwordHash;
     }
 
+<<<<<<< HEAD
+    public BigDecimal getSpentAmount() {
+        return spentAmount == null ? BigDecimal.ZERO : spentAmount;
+    }
+
+    public List<String> getPreferenceLabels() {
+        if (travelPreferences == null || travelPreferences.isBlank()) {
+            return List.of();
+        }
+        return Arrays.stream(travelPreferences.split(","))
+                .map(String::trim)
+                .filter(label -> !label.isEmpty())
+                .toList();
+    }
+
+    public void setPreferenceLabels(List<String> labels) {
+        this.travelPreferences = labels == null || labels.isEmpty()
+                ? null
+                : String.join(",", labels);
+    }
+
+    public Instant getPasswordResetExpiresAt() {
+        return passwordResetExpiresAt;
+    }
+
+    public void assignResetToken(String tokenHash, Instant expiresAt) {
+        this.passwordResetTokenHash = tokenHash;
+        this.passwordResetExpiresAt = expiresAt;
+    }
+
+    public void updatePassword(String newPasswordHash) {
+        this.passwordHash = newPasswordHash;
+        this.passwordResetTokenHash = null;
+        this.passwordResetExpiresAt = null;
+=======
     public int getPoints() {
         return points;
     }
@@ -86,5 +147,6 @@ public class User {
 
     public void setPasswordHash(String passwordHash) {
         this.passwordHash = passwordHash;
+>>>>>>> a05be0119e7e45ee0e3321c2455c47ef0298f388
     }
 }

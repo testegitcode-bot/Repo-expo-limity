@@ -6,6 +6,7 @@ import java.util.Map;
 import com.limity.back.common.ProviderException;
 import com.limity.back.auth.DuplicateEmailException;
 import com.limity.back.auth.InvalidCredentialsException;
+import com.limity.back.auth.InvalidPasswordResetException;
 import com.limity.back.origin.OriginNotFoundException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -39,6 +40,11 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(InvalidCredentialsException.class)
     ProblemDetail invalidCredentials(InvalidCredentialsException e) {
         return ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, e.getMessage());
+    }
+
+    @ExceptionHandler(InvalidPasswordResetException.class)
+    ProblemDetail invalidPasswordReset(InvalidPasswordResetException e) {
+        return ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.getMessage());
     }
 
     @ExceptionHandler(ProviderException.class)

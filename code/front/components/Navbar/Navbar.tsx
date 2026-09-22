@@ -28,21 +28,21 @@ export default function Navbar({ isLogged }: props) {
   useEffect(() => {
     const token = getSessionToken();
     if (!token) {
+      setHasSession(false);
       return;
     }
-    getCurrentUser(token)
-      .then(() => setHasSession(true))
-      .catch(() => {
-        clearSessionToken();
-        setHasSession(false);
-      });
-  }, []);
+    setHasSession(true);
+    getCurrentUser(token).catch(() => {
+      clearSessionToken();
+      setHasSession(false);
+    });
+  }, [pathname]);
 
   function logout() {
     clearSessionToken();
     setHasSession(false);
     setIsOpen(false);
-    router.push("/");
+    router.replace("/");
   }
 
   return (

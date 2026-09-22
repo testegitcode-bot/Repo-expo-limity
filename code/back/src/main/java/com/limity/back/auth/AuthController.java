@@ -3,6 +3,7 @@ package com.limity.back.auth;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -32,11 +33,37 @@ public class AuthController {
         return service.login(request);
     }
 
+    @PostMapping("/forgot-password")
+    public ForgotPasswordResponse forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
+        return service.forgotPassword(request);
+    }
+
+    @PostMapping("/reset-password")
+    public MessageResponse resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
+        return service.resetPassword(request);
+    }
+
     @GetMapping("/me")
     public UserView me(Authentication authentication) {
         return service.currentUser(authentication.getName());
     }
 
+<<<<<<< HEAD
+    @PutMapping("/me")
+    public UserView updateProfile(Authentication authentication, @Valid @RequestBody UpdateProfileRequest request) {
+        return service.updateProfile(authentication.getName(), request);
+    }
+
+    @PutMapping("/me/preferences")
+    public UserView updatePreferences(Authentication authentication, @Valid @RequestBody UpdatePreferencesRequest request) {
+        return service.updatePreferences(authentication.getName(), request);
+    }
+
+    @DeleteMapping("/me")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteAccount(Authentication authentication) {
+        service.deleteAccount(authentication.getName());
+=======
     @PutMapping("/preferences")
     public UserView updatePreferences(Authentication authentication,
             @Valid @RequestBody PreferenceRequest request) {
@@ -46,5 +73,6 @@ public class AuthController {
     @PostMapping("/recover-password")
     public void recoverPassword(@Valid @RequestBody PasswordRecoveryRequest request) {
         service.recoverPassword(request.email(), request.newPassword());
+>>>>>>> a05be0119e7e45ee0e3321c2455c47ef0298f388
     }
 }

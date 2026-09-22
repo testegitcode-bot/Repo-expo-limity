@@ -1,14 +1,19 @@
 // Endereço do backend Spring Boot. Para mudar, crie code/front/.env.local com
 // NEXT_PUBLIC_API_URL=http://localhost:PORTA e reinicie o `npm run dev`.
-export const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080";
+export const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8090";
 
 export interface AuthUser {
   id: string;
   name: string;
   email: string;
+<<<<<<< HEAD
+  preferences: string[];
+  spentAmount: number;
+=======
   points: number;
   cashback: number;
   preferences: string[];
+>>>>>>> a05be0119e7e45ee0e3321c2455c47ef0298f388
 }
 
 export interface AuthResponse {
@@ -149,7 +154,14 @@ async function request<T>(path: string, init: RequestInit = {}, token?: string):
   if (!response.ok) {
     throw await parseApiError(response);
   }
-  return response.json() as Promise<T>;
+  if (response.status === 204) {
+    return undefined as T;
+  }
+  const text = await response.text();
+  if (!text) {
+    return undefined as T;
+  }
+  return JSON.parse(text) as T;
 }
 
 export function register(payload: RegisterPayload): Promise<AuthResponse> {
@@ -171,6 +183,43 @@ export function getCurrentUser(token: string): Promise<AuthUser> {
 }
 
 export function updatePreferences(token: string, preferences: string[]): Promise<AuthUser> {
+<<<<<<< HEAD
+  return request<AuthUser>(
+    "/api/v1/auth/me/preferences",
+    { method: "PUT", body: JSON.stringify({ preferences }) },
+    token,
+  );
+}
+
+export function updateProfile(token: string, payload: { name: string; email: string }): Promise<AuthUser> {
+  return request<AuthUser>(
+    "/api/v1/auth/me",
+    { method: "PUT", body: JSON.stringify(payload) },
+    token,
+  );
+}
+
+export function deleteAccount(token: string): Promise<void> {
+  return request<void>("/api/v1/auth/me", { method: "DELETE" }, token);
+}
+
+export interface ForgotPasswordResponse {
+  message: string;
+  resetToken: string;
+}
+
+export function forgotPassword(email: string): Promise<ForgotPasswordResponse> {
+  return request<ForgotPasswordResponse>("/api/v1/auth/forgot-password", {
+    method: "POST",
+    body: JSON.stringify({ email }),
+  });
+}
+
+export function resetPassword(token: string, password: string): Promise<{ message: string }> {
+  return request<{ message: string }>("/api/v1/auth/reset-password", {
+    method: "POST",
+    body: JSON.stringify({ token, password }),
+=======
   return request<AuthUser>("/api/v1/auth/preferences", {
     method: "PUT",
     body: JSON.stringify({ preferences }),
@@ -186,6 +235,7 @@ export function recoverPassword(payload: PasswordRecoveryPayload): Promise<void>
   return request<void>("/api/v1/auth/recover-password", {
     method: "POST",
     body: JSON.stringify(payload),
+>>>>>>> a05be0119e7e45ee0e3321c2455c47ef0298f388
   });
 }
 

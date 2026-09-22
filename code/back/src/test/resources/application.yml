@@ -8,6 +8,43 @@ spring:
       ddl-auto: create-drop
 
 limity:
+  cors:
+    allowed-origins: http://localhost:*
+  search:
+    default-nights: 4
+    max-hotel-lookups: 12
+    date-window-days: 3
+    stay-tolerance-nights: 2
+    max-candidates: 40
+    bus:
+      max-distance-km: 1800
+      road-factor: 1.25
+      brl-per-km: 0.25
+      average-speed-kmh: 65
+  travelpayouts:
+    token:
+    marker:
+    base-url: https://api.travelpayouts.com
+    places-url: https://autocomplete.travelpayouts.com
+    link-base-url: https://www.aviasales.com
+    market: br
+    timeout: 10s
+    max-concurrency: 6
+  liteapi:
+    key:
+    base-url: https://api.liteapi.travel/v3.0
+    timeout: 20s
+    max-concurrency: 2
+    hotels-per-lookup: 30
+    hotel-radius-meters: 15000
+    rates-timeout-seconds: 8
+  pexels:
+    key:
+    base-url: https://api.pexels.com/v1
+    timeout: 8s
+  geocoding:
+    base-url: https://geocoding-api.open-meteo.com/v1
+    timeout: 8s
   auth:
     jwt-secret: test-secret-with-at-least-32-characters-long
     jwt-expiration: PT2H

@@ -29,7 +29,7 @@ limity:
   cors:
     # Origens do front separadas por vírgula; aceita curinga na porta (http://localhost:*),
     # útil porque o Next muda de porta quando a 3000 está ocupada.
-    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:*}
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:*,http://127.0.0.1:*}
 
   search:
     default-nights: 4          # diárias quando o cliente não informa noites nem volta

@@ -40,7 +40,8 @@ class SearchServiceTest {
             new LimityProperties.Travelpayouts("t", "m", "", "", "", "br", Duration.ofSeconds(5), 2),
             new LimityProperties.LiteApi("k", "", Duration.ofSeconds(5), 2, 30, 15000, 8),
             new LimityProperties.Pexels("", "", Duration.ofSeconds(5)),
-            new LimityProperties.Geocoding("", Duration.ofSeconds(5)));
+            new LimityProperties.Geocoding("", Duration.ofSeconds(5)),
+            new LimityProperties.Auth("test-secret-with-at-least-32-characters-long", Duration.ofHours(2)));
 
     private OriginResolver origin;
     private PexelsImageClient images;

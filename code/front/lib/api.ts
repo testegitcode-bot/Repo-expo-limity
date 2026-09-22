@@ -1,11 +1,13 @@
 // Endereço do backend Spring Boot. Para mudar, crie code/front/.env.local com
 // NEXT_PUBLIC_API_URL=http://localhost:PORTA e reinicie o `npm run dev`.
-export const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080";
+export const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8090";
 
 export interface AuthUser {
   id: string;
   name: string;
   email: string;
+  preferences: string[];
+  spentAmount: number;
 }
 
 export interface AuthResponse {
@@ -146,7 +148,14 @@ async function request<T>(path: string, init: RequestInit = {}, token?: string):
   if (!response.ok) {
     throw await parseApiError(response);
   }
-  return response.json() as Promise<T>;
+  if (response.status === 204) {
+    return undefined as T;
+  }
+  const text = await response.text();
+  if (!text) {
+    return undefined as T;
+  }
+  return JSON.parse(text) as T;
 }
 
 export function register(payload: RegisterPayload): Promise<AuthResponse> {
@@ -165,6 +174,26 @@ export function login(payload: LoginPayload): Promise<AuthResponse> {
 
 export function getCurrentUser(token: string): Promise<AuthUser> {
   return request<AuthUser>("/api/v1/auth/me", { method: "GET" }, token);
+}
+
+export function updatePreferences(token: string, preferences: string[]): Promise<AuthUser> {
+  return request<AuthUser>(
+    "/api/v1/auth/me/preferences",
+    { method: "PUT", body: JSON.stringify({ preferences }) },
+    token,
+  );
+}
+
+export function updateProfile(token: string, payload: { name: string; email: string }): Promise<AuthUser> {
+  return request<AuthUser>(
+    "/api/v1/auth/me",
+    { method: "PUT", body: JSON.stringify(payload) },
+    token,
+  );
+}
+
+export function deleteAccount(token: string): Promise<void> {
+  return request<void>("/api/v1/auth/me", { method: "DELETE" }, token);
 }
 
 export async function searchTrips(

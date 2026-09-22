@@ -13,12 +13,13 @@ import org.springframework.cache.caffeine.CaffeineCache;
 import org.springframework.cache.support.SimpleCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableCaching
-public class AppConfig implements WebMvcConfigurer {
+public class AppConfig {
 
     public static final String CACHE_FLIGHTS = "flights";
     public static final String CACHE_HOTEL_STAY = "hotelStay";
@@ -62,11 +63,25 @@ public class AppConfig implements WebMvcConfigurer {
         });
     }
 
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/api/**")
-                .allowedOriginPatterns(props.cors().allowedOrigins().toArray(String[]::new))
-            .allowedMethods("GET", "POST", "OPTIONS")
-            .allowedHeaders("*");
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOriginPatterns(allowedOriginPatterns());
+        configuration.setAllowedMethods(List.of("GET", "HEAD", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setExposedHeaders(List.of("Authorization"));
+        configuration.setMaxAge(3600L);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
+
+    private List<String> allowedOriginPatterns() {
+        List<String> origins = new java.util.ArrayList<>(props.cors().allowedOrigins());
+        origins.add("http://localhost:*");
+        origins.add("http://127.0.0.1:*");
+        origins.add("https://localhost:*");
+        origins.add("https://127.0.0.1:*");
+        return origins.stream().distinct().toList();
     }
 }

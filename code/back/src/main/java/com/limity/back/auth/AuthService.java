@@ -1,6 +1,8 @@
 package com.limity.back.auth;
 
+import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -39,10 +41,38 @@ public class AuthService {
 
     @Transactional(readOnly = true)
     public UserView currentUser(String subject) {
+        return UserView.from(requireUser(subject));
+    }
+
+    @Transactional
+    public UserView updatePreferences(String subject, UpdatePreferencesRequest request) {
+        User user = requireUser(subject);
+        List<String> preferences = TravelPreferences.sanitize(request.preferences());
+        user.setPreferenceLabels(preferences);
+        return UserView.from(users.save(user));
+    }
+
+    @Transactional
+    public UserView updateProfile(String subject, UpdateProfileRequest request) {
+        User user = requireUser(subject);
+        String email = normalizeEmail(request.email());
+        users.findByEmail(email)
+                .filter(existing -> !existing.getId().equals(user.getId()))
+                .ifPresent(existing -> {
+                    throw new DuplicateEmailException();
+                });
+        user.updateProfile(request.name().trim(), email);
+        return UserView.from(users.save(user));
+    }
+
+    @Transactional
+    public void deleteAccount(String subject) {
+        users.delete(requireUser(subject));
+    }
+
+    private User requireUser(String subject) {
         try {
-            return users.findById(java.util.UUID.fromString(subject))
-                    .map(UserView::from)
-                    .orElseThrow(InvalidCredentialsException::new);
+            return users.findById(UUID.fromString(subject)).orElseThrow(InvalidCredentialsException::new);
         } catch (IllegalArgumentException exception) {
             throw new InvalidCredentialsException();
         }

@@ -1,5 +1,8 @@
 package com.limity.back.auth;
 
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 import jakarta.persistence.Column;
@@ -26,6 +29,12 @@ public class User {
     @Column(nullable = false)
     private String passwordHash;
 
+    @Column(length = 500)
+    private String travelPreferences;
+
+    @Column(precision = 12, scale = 2)
+    private BigDecimal spentAmount = BigDecimal.ZERO;
+
     protected User() {
     }
 
@@ -33,6 +42,7 @@ public class User {
         this.name = name;
         this.email = email;
         this.passwordHash = passwordHash;
+        this.spentAmount = BigDecimal.ZERO;
     }
 
     public UUID getId() {
@@ -47,7 +57,32 @@ public class User {
         return email;
     }
 
+    public void updateProfile(String name, String email) {
+        this.name = name;
+        this.email = email;
+    }
+
     public String getPasswordHash() {
         return passwordHash;
+    }
+
+    public BigDecimal getSpentAmount() {
+        return spentAmount == null ? BigDecimal.ZERO : spentAmount;
+    }
+
+    public List<String> getPreferenceLabels() {
+        if (travelPreferences == null || travelPreferences.isBlank()) {
+            return List.of();
+        }
+        return Arrays.stream(travelPreferences.split(","))
+                .map(String::trim)
+                .filter(label -> !label.isEmpty())
+                .toList();
+    }
+
+    public void setPreferenceLabels(List<String> labels) {
+        this.travelPreferences = labels == null || labels.isEmpty()
+                ? null
+                : String.join(",", labels);
     }
 }

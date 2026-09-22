@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -34,5 +35,16 @@ public class AuthController {
     @GetMapping("/me")
     public UserView me(Authentication authentication) {
         return service.currentUser(authentication.getName());
+    }
+
+    @PutMapping("/preferences")
+    public UserView updatePreferences(Authentication authentication,
+            @Valid @RequestBody PreferenceRequest request) {
+        return service.updatePreferences(authentication.getName(), request.preferences());
+    }
+
+    @PostMapping("/recover-password")
+    public void recoverPassword(@Valid @RequestBody PasswordRecoveryRequest request) {
+        service.recoverPassword(request.email(), request.newPassword());
     }
 }

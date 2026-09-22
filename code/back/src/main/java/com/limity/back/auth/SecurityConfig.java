@@ -34,8 +34,9 @@ public class SecurityConfig {
                 .formLogin(form -> form.disable())
                 .httpBasic(basic -> basic.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/v1/auth/register", "/api/v1/auth/login").permitAll()
-                        .requestMatchers("/api/v1/auth/me").authenticated()
+                        .requestMatchers("/api/v1/auth/register", "/api/v1/auth/login",
+                                "/api/v1/auth/recover-password").permitAll()
+                        .requestMatchers("/api/v1/auth/me", "/api/v1/auth/preferences").authenticated()
                         .requestMatchers("/actuator/health", "/api/v1/search", "/api/v1/destinations/**",
                                 "/api/v1/origins/**", "/api/v1/providers/**").permitAll()
                         .anyRequest().permitAll())

@@ -6,6 +6,9 @@ export interface AuthUser {
   id: string;
   name: string;
   email: string;
+  points: number;
+  cashback: number;
+  preferences: string[];
 }
 
 export interface AuthResponse {
@@ -165,6 +168,25 @@ export function login(payload: LoginPayload): Promise<AuthResponse> {
 
 export function getCurrentUser(token: string): Promise<AuthUser> {
   return request<AuthUser>("/api/v1/auth/me", { method: "GET" }, token);
+}
+
+export function updatePreferences(token: string, preferences: string[]): Promise<AuthUser> {
+  return request<AuthUser>("/api/v1/auth/preferences", {
+    method: "PUT",
+    body: JSON.stringify({ preferences }),
+  }, token);
+}
+
+export interface PasswordRecoveryPayload {
+  email: string;
+  newPassword: string;
+}
+
+export function recoverPassword(payload: PasswordRecoveryPayload): Promise<void> {
+  return request<void>("/api/v1/auth/recover-password", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
 }
 
 export async function searchTrips(

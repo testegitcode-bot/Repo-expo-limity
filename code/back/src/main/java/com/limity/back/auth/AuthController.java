@@ -33,6 +33,16 @@ public class AuthController {
         return service.login(request);
     }
 
+    @PostMapping("/forgot-password")
+    public ForgotPasswordResponse forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
+        return service.forgotPassword(request);
+    }
+
+    @PostMapping("/reset-password")
+    public MessageResponse resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
+        return service.resetPassword(request);
+    }
+
     @GetMapping("/me")
     public UserView me(Authentication authentication) {
         return service.currentUser(authentication.getName());

@@ -124,4 +124,31 @@ class AuthIntegrationTest {
                         .content("{\"email\":\"carla-nova@example.com\",\"password\":\"senha-segura\"}"))
                 .andExpect(status().isUnauthorized());
     }
+
+    @Test
+    void resetsPasswordWithRecoveryToken() throws Exception {
+        mvc().perform(post("/api/v1/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"name\":\"Ana Souza\",\"email\":\"ana-reset@example.com\",\"password\":\"senha-antiga\"}"))
+                .andExpect(status().isCreated());
+
+        MvcResult forgot = mvc().perform(post("/api/v1/auth/forgot-password")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"email\":\"ANA-RESET@example.com\"}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.resetToken").isString())
+                .andReturn();
+
+        String resetToken = com.jayway.jsonpath.JsonPath.read(forgot.getResponse().getContentAsString(), "$.resetToken");
+
+        mvc().perform(post("/api/v1/auth/reset-password")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"token\":\"" + resetToken + "\",\"password\":\"senha-nova-1\"}"))
+                .andExpect(status().isOk());
+
+        mvc().perform(post("/api/v1/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"email\":\"ana-reset@example.com\",\"password\":\"senha-nova-1\"}"))
+                .andExpect(status().isOk());
+    }
 }

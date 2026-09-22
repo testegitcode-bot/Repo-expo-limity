@@ -76,7 +76,7 @@ export default function Entrar() {
             <input type="checkbox" className="accent-azul size-4" />
             Lembrar de mim
           </label>
-          <Link href="#" className="text-azul font-medium">
+          <Link href="/recuperar-senha" className="text-azul font-medium">
             Esqueci minha senha
           </Link>
         </div>

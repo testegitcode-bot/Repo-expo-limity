@@ -1,6 +1,7 @@
 package com.limity.back.auth;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -34,6 +35,11 @@ public class User {
 
     @Column(precision = 12, scale = 2)
     private BigDecimal spentAmount = BigDecimal.ZERO;
+
+    @Column(length = 64)
+    private String passwordResetTokenHash;
+
+    private Instant passwordResetExpiresAt;
 
     protected User() {
     }
@@ -84,5 +90,20 @@ public class User {
         this.travelPreferences = labels == null || labels.isEmpty()
                 ? null
                 : String.join(",", labels);
+    }
+
+    public Instant getPasswordResetExpiresAt() {
+        return passwordResetExpiresAt;
+    }
+
+    public void assignResetToken(String tokenHash, Instant expiresAt) {
+        this.passwordResetTokenHash = tokenHash;
+        this.passwordResetExpiresAt = expiresAt;
+    }
+
+    public void updatePassword(String newPasswordHash) {
+        this.passwordHash = newPasswordHash;
+        this.passwordResetTokenHash = null;
+        this.passwordResetExpiresAt = null;
     }
 }

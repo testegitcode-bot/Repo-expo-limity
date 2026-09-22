@@ -196,6 +196,25 @@ export function deleteAccount(token: string): Promise<void> {
   return request<void>("/api/v1/auth/me", { method: "DELETE" }, token);
 }
 
+export interface ForgotPasswordResponse {
+  message: string;
+  resetToken: string;
+}
+
+export function forgotPassword(email: string): Promise<ForgotPasswordResponse> {
+  return request<ForgotPasswordResponse>("/api/v1/auth/forgot-password", {
+    method: "POST",
+    body: JSON.stringify({ email }),
+  });
+}
+
+export function resetPassword(token: string, password: string): Promise<{ message: string }> {
+  return request<{ message: string }>("/api/v1/auth/reset-password", {
+    method: "POST",
+    body: JSON.stringify({ token, password }),
+  });
+}
+
 export async function searchTrips(
   payload: SearchPayload,
   signal?: AbortSignal,

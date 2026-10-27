@@ -68,23 +68,59 @@ O projeto adota uma arquitetura do tipo **Cliente-Servidor**, dividida para aten
 
 ## 🚀 Instruções de Utilização
 
-*(Assim que a primeira versão do sistema estiver disponível, deverá complementar com as instruções de utilização. Descreva como instalar eventuais dependências e como executar a aplicação).*
+A busca e o radar usam uma fila RabbitMQ. O backend não sobe esse broker sozinho: ele só se conecta se o Docker já estiver com o container no ar. O PostgreSQL continua sendo o banco instalado na máquina, não um container.
 
 ### Pré-requisitos
-* Node.js (para o ambiente Web)
-* Flutter SDK (para o ambiente Mobile)
-* [Adicionar banco de dados ou outras dependências do Backend]
+* Java 17 ou superior
+* Node.js
+* PostgreSQL em `localhost:5432`, com o banco `limity` criado
+* Docker Desktop (RabbitMQ)
+* Flutter SDK, só para o aplicativo mobile
 
-### Rodando o projeto Web (React)
+### 1. RabbitMQ
+
+Com o Docker Desktop aberto, na raiz deste repositório:
+
 ```bash
-# Clone este repositório
-$ git clone [https://github.com/seu-usuario/limity.git](https://github.com/seu-usuario/limity.git)
+docker compose up -d
+```
 
-# Acesse a pasta do projeto web
-$ cd limity/web
+O broker fica em `localhost:5672` (usuário `limity`, senha `limity_dev`). A interface de gerenciamento é `http://localhost:15672`. Nas próximas vezes, basta o Docker Desktop estar aberto: o container reinicia sozinho. Se ele não estiver no ar, rode o comando de novo.
 
-# Instale as dependências
-$ npm install
+### 2. Backend
 
-# Execute a aplicação
-$ npm run dev
+```bash
+cd code/back
+# Na primeira vez: copie o modelo e preencha as chaves de API e o JWT
+cp .env.example .env
+
+# Windows
+mvnw.cmd spring-boot:run
+
+# Linux e macOS
+./mvnw spring-boot:run
+```
+
+A API sobe em `http://localhost:8080`. O `.env` não vai para o Git. Sem o RabbitMQ, a busca ainda responde por um fallback local. Com o container no ar, ela entra na fila.
+
+### 3. Web
+
+Em outro terminal:
+
+```bash
+cd code/front
+npm install
+npm run dev
+```
+
+O site abre em `http://localhost:3000`. A tela de resultados exige uma conta: sem login, a busca não é enviada.
+
+### 4. Mobile
+
+```bash
+cd code/mobile/limity
+flutter pub get
+flutter run
+```
+
+O app usa a mesma API do site. A busca também exige login.
